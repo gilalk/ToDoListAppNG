@@ -12,11 +12,6 @@ export class TodoComponent implements OnInit {
   tasks: string[] = [];
 
   constructor() { 
-    this.tasks = [
-      'task 1',
-      'task 2',
-      'task 3',
-    ]
   }
 
   ngOnInit(): void {
@@ -26,6 +21,10 @@ export class TodoComponent implements OnInit {
     let newTask = addForm.value.task;
     this.tasks.push(newTask)
     addForm.resetForm();
+  }
+
+  handleRemove(t:string){
+    this.tasks = this.tasks.filter((myTask) => myTask != t);
   }
 
 }
