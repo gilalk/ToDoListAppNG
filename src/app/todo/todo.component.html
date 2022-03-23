@@ -1,0 +1,13 @@
+<h1>Amazing TODO App</h1>
+<h2>Track your task! Be organized person!</h2>
+
+<hr>
+<h4>Add new task:</h4>
+<form #addForm="ngForm" (submit)="handleSubmit(addForm)">
+    <input type="text" ngModel name="task">
+    <button type="submit">Add Task</button>
+</form>
+<h3>Your Tasks:</h3>
+<ul>
+    <li *ngFor="let t of tasks">{{t}}</li>
+</ul>
