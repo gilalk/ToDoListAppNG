@@ -23,6 +23,8 @@ export class TodoComponent implements OnInit {
   // An array for the tasks
   tasks: Task[] = [];
 
+  readonly TASKS_KEY = 'tasks';
+
   SortEnum = SortOptions;
   sort: SortOptions = SortOptions.NONE;
 
@@ -30,6 +32,12 @@ export class TodoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let savedTasksJson = localStorage.getItem(this.TASKS_KEY);
+
+    if(savedTasksJson != null){
+      this.tasks = JSON.parse(savedTasksJson);
+      this.handleSearch("");
+    }
   }
 
   handleSubmit(addForm: NgForm) {
@@ -40,6 +48,7 @@ export class TodoComponent implements OnInit {
 
   handleRemove(t: string) {
     this.tasks = this.tasks.filter((myTask: Task) => myTask.name != t);
+    this.handleSave();
   }
 
   handleUpdate(t: Task) {
@@ -107,5 +116,9 @@ export class TodoComponent implements OnInit {
     this.tasks.map( (task) => {
       task.isVisible = (task.name.includes(v));
     });
+  }
+
+  handleSave() : void{
+    localStorage.setItem(this.TASKS_KEY, JSON.stringify(this.tasks))
   }
 }
