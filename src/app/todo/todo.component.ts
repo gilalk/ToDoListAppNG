@@ -4,6 +4,13 @@ import { NgForm } from '@angular/forms';
 export interface Task {
   name: string;
   isUpdated: boolean;
+  isVisible: boolean;
+}
+
+enum SortOptions {
+  ASC = 'asc',
+  DESC = 'desc',
+  NONE = 'none'
 }
 
 @Component({
@@ -16,23 +23,26 @@ export class TodoComponent implements OnInit {
   // An array for the tasks
   tasks: Task[] = [];
 
-  constructor() { 
+  SortEnum = SortOptions;
+  sort: SortOptions = SortOptions.NONE;
+
+  constructor() {
   }
 
   ngOnInit(): void {
   }
 
-  handleSubmit(addForm:NgForm) {
-    let newTask = {name: addForm.value.task, isUpdated: false};
+  handleSubmit(addForm: NgForm) {
+    let newTask = { name: addForm.value.task, isUpdated: false, isVisible: true };
     this.tasks.push(newTask)
     addForm.resetForm();
   }
 
-  handleRemove(t:string){
+  handleRemove(t: string) {
     this.tasks = this.tasks.filter((myTask: Task) => myTask.name != t);
   }
 
-  handleUpdate(t:Task){
+  handleUpdate(t: Task) {
     t.isUpdated = true;
   }
 
@@ -45,5 +55,57 @@ export class TodoComponent implements OnInit {
 
     //canceling update mode
     updatedTask.isUpdated = false;
+  }
+
+  handleSort(sortDirection: SortOptions) {
+    
+    if (sortDirection === this.sort){
+      this.sort = SortOptions.NONE;
+      return;
+    }
+
+    //Keeps the current state of the sort
+    this.sort = sortDirection;
+
+    switch (sortDirection) {
+      case SortOptions.ASC:
+        this.tasks = this.tasks.sort((a: Task, b: Task) =>{
+          let aLower = a.name.toLowerCase();
+          let bLower = b.name.toLowerCase();
+
+          if (aLower < bLower){
+            return -1;
+          }
+          if (aLower > bLower){
+            return 1;
+          }
+          return 0;
+        })
+        break;
+      case SortOptions.DESC:
+        this.tasks = this.tasks.sort((a: Task, b: Task) =>{
+          let aLower = a.name.toLowerCase();
+          let bLower = b.name.toLowerCase();
+
+          if (aLower < bLower){
+            return 1;
+          }
+          if (aLower > bLower){
+            return -1;
+          }
+          return 0;
+        })
+        break;
+      case SortOptions.NONE:
+        break;
+      default:
+        break;
+    }
+  }
+
+  handleSearch(v:string){
+    this.tasks.map( (task) => {
+      task.isVisible = (task.name.includes(v));
+    });
   }
 }

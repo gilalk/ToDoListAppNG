@@ -5,8 +5,16 @@
 <h4>Add new task:</h4>
 <form #addForm="ngForm" (submit)="handleSubmit(addForm)">
     <input type="text" ngModel name="task">
-    <button type="submit">Add Task</button>
+    <button class="btn btn-primary" type="submit">Add Task</button>
 </form>
+<hr>
+<div>
+    <label for="search">
+        Search:
+        <input type="text" #searchText (keyup)="handleSearch(searchText.value)">
+    </label>
+</div>
+<hr>
 <h3>Your Tasks:</h3>
 <!-- <ul>
     <li *ngFor="let t of tasks">
@@ -18,25 +26,28 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <td>Task</td>
+            <td>Task
+                <span class="sortButton" [class.isSorted]="sort == SortEnum.ASC" (click)="handleSort(SortEnum.ASC)">&uarr;</span>
+                <span class="sortButton" [class.isSorted]="sort == SortEnum.DESC" (click)="handleSort(SortEnum.DESC)">&#8595;</span>
+            </td>
             <td>Operation</td>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let t of tasks">
+        <tr *ngFor="let t of tasks" [hidden]="!t.isVisible">
             <!--the task-->
             <td>
                 <span *ngIf="!t.isUpdated">{{t.name}}</span>
                 <span *ngIf="t.isUpdated">
                     <!--Update Mode-->
-                    <input type="text" name="newTask" #newTask>
-                    <button type="submit" (click)="handleFinishUpdate(t.name, newTask.value)">Update</button>
+                    <input type="text" name="newTask" #newTask value="{{t.name}}">
+                    <button class="btn btn-primary" type="submit" (click)="handleFinishUpdate(t.name, newTask.value)">Update</button>
                 </span>
             </td>
             <!--the buttons-->
             <td>
-                <button (click)="handleRemove(t.name)">Remove</button>
-                <button (click)="handleUpdate(t)">Update</button>
+                <button class="btn btn-danger" (click)="handleRemove(t.name)">Remove</button>
+                <button class="btn btn-success" (click)="handleUpdate(t)">Update</button>
             </td>
         </tr>
     </tbody>
